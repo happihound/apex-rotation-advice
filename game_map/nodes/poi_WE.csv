@@ -1,0 +1,93 @@
+poiID, poiName, x, y, radius, isChoke
+1,North Trails Choke, 920,630,-1,True
+2,Skyhook Train Choke,1810,560,-1,True
+3,Train - North Survey Choke,2000,556,-1,True
+4,North Survey, 2750,430,192,False
+5,East Trials,703,814,115,False
+6,Trials,880,940,160,False
+7,Skyhook,1460,826,300,False
+8,East Skyhook Train Choke,1960,750,-1,True
+9,Survey Camp,2300,811,200,False
+10,Climatizer,2970,760,230,False
+11,East Skyhook Choke,1870,939,-1,True
+12,Train - West Survey Choke,2035,824,-1,True  
+13,Climatizer East No-Name,3379,931,110,False
+14,Epi-Climatizer South,2870,982,75,False
+15,North Fissure,690,1290,100,False
+16,Countdown - Skyhook Choke,1140,1150,-1,True
+17,Skyhook - Landslide Choke,1647,1242,-1,True
+18,North Frag Train Station,2060,1240,110,False
+19,Epicenter,2600,1150,200,False
+20,Climatizer South No-Name,3200,1150,15,False
+21,Fissure, 800, 1550, 190, False   
+22,Countdown,1180,1450,200,False
+23,Countdown - Landslide No-Name, 1600, 1550, 120, False
+24,Landslide - Frag West Choke, 1787,1570,-1,True
+25,Frag West, 2200, 1550, 200, False    
+26,Frag West - Epi choke, 2570, 1437, -1, True
+27,Epi - Overlook Choke, 2835, 1332, -1, True
+28,Overlook, 3380, 1642, 250, False
+29,Fissure - Countdown Choke, 1000, 1663, -1, True
+30,Landslide, 1515,1800, 170, False
+31,Streamer,2330,1824,40,false
+32,Frag East, 2625, 1800, 200, False
+33,South Fissure, 900, 1800, 70, False
+34,Fissure - Landslide Choke, 1168, 1857, -1, True
+35,Frag East No-Name, 2989, 1938, 143, False
+36,West Staging No-Name, 827, 2157, 166, False
+37,Staging-Landslide Choke, 1220, 2083, -1, True
+38,Landslide-Streamer Choke, 1828, 2003, -1, True
+39,Staging, 1276, 2383, 165, False
+40,Landslide Choke, 1642, 2149, -1, True
+41,Frag - Harvester Choke, 2227, 2229, -1,False
+42,Frag East - Lava Siphon Choke, 2710, 2335, -1, True
+43,Frag East - Geyser Choke, 3145, 2213, -1, True
+44,Overlook - Geyser Choke, 3353, 1991, -1, True
+45,No-Name - Thermal Choke, 827, 2367, -1, True
+46,Harvester No-Name, 1541, 2501, 123, False
+47,Harvester, 1933, 2563, 220, False
+48,North Harvester Lava Siphon Choke, 2297, 2359, -1, True
+49,The Geyser, 3193, 2451, 190, False
+50,Staging - Thermal Choke, 1255, 2628, -1, True
+51,Harvester No-Name Thermal Choke, 1459, 2720, -1, True
+52,Harvester - Lava Siphon Choke, 2235, 2634, -1, True
+53,North Lava Siphon No-Name, 2565, 2474, 110, False
+54,Lava Siphon - Geyser Choke, 2855, 2636, -1, True
+55,Thermal Station, 1139, 2981, 240, False
+56,Harvester-Thermal Choke, 1618, 2769, -1, True
+57,Bridge - No-Name Choke, 2177, 2811, -1, True
+58,Lava Siphon, 2391, 3019, 280, False
+59,Big Maude - Geyser Choke, 3104, 2719, -1, True
+60,Lava Siphon Bridge, 1871, 2999, 140, False
+61,Lava Siphon - Big Maude Choke, 2951, 2959, -1, True
+62,Big Maude, 3315, 2997, 145, False
+63,East Thermal Choke, 1499, 3231, -1, True
+64,South Lava Siphon No-Name, 2645, 3265, 99, False
+65,Lava City, 3193, 3281, 161, False
+66,South Thermal No-Name Choke, 1342, 3439, -1, True
+67,The Tree, 1712, 3401, 250, False
+68,Launch-Lava Siphon Choke, 2565, 3399, -1, True
+69,Lava Siphon - Lava City- The Dome Choke, 2853, 3365, -1, True
+70,Tree- Launch Site Choke, 1943, 3679, -1, True
+71,Launch Site, 2243, 3699, 220, False
+72,Launch-Dome Choke, 2571, 3747, -1, True
+73,The Dome, 2939, 3791, 210, False
+74,Lava City - Dome Choke, 3061, 3513, -1, True
+75,Fissure - Countdown Choke, 878, 1379, -1, True
+76,East Trials - Countdown Choke,880,1190, -1, True
+77,Frag East - Frag West Choke, 2400, 1721, -1, True
+ASSOCIATION
+1,5,6,7 
+2,7,3,8,12 
+3,2,4,9,8,12 
+4,3,9,10 
+5,15,1,6,76
+6,1,5,7,16
+7,1,6,16,17,2,8,11
+8,7,11,12,3,2
+9,12,3,4,19,18,10
+10,4,9,19,13,20,14
+11,7,8,18
+12,9,8,2,3
+13,10,14,20
+14,

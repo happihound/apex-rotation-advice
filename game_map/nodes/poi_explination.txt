@@ -1,0 +1,18 @@
+#apex legends poi names on the map worlds edge
+#the format is 
+#(int),(string),(int),(int),(int),(bool)
+#poiID, poiName, x, y, radius, isChoke
+
+#example POI:
+6,Trials,763,753,160,False
+
+#Chokes are all paths between POIs, they dont have a radius
+#All chokes are named "{name - name} choke", everything else is a poi
+
+#example choke:
+1,North Trails Choke, 920,630,-1,True
+
+#After all the poi's and chokes we place an ASSOCIATION to tell the program that we are switching to assosiations
+#assosiations look like this:
+#(int),(int)...(int)
+#poiID,{other poi or choke},...,{other poi or choke}

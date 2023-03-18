@@ -12,6 +12,13 @@ class gameMapImage:
     def ratio(self) -> str:
         return self.__ratio
 
+    def ratioNumber(self) -> float:
+        if "by" in self.__ratio:
+            ratio = self.__ratio.split("by")
+        else:
+            ratio = self.__ratio.split(":")
+        return float(ratio[0]) / float(ratio[1])
+
     def image(self) -> np.ndarray:
         return self.__image
 

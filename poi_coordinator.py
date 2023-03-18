@@ -101,6 +101,7 @@ class coordinator:
         path = []
         path.append(start)
         while (path[-1] != end):
+            print(path[-1].getName())
             shortestDistance = 1
             shortestPoi = None
             for poi in path[-1].getAssociations():
@@ -114,6 +115,89 @@ class coordinator:
                         shortestDistance = self.distanceBetweenPoi(poi, end)
                         shortestPoi = poi
             path.append(shortestPoi)
+        return path
+
+    def findPoiFromLocation(self, x: int, y: int):
+        if (type(x) != int):
+            raise TypeError("x must be of type int")
+        if (type(y) != int):
+            raise TypeError("y must be of type int")
+        shortestDistance = 1
+        shortestPoi = None
+        for poi in self.__poi_list:
+            if (shortestDistance == 1):
+                shortestDistance = self.distanceBetweenPoi(poi, poi_node(0, "", x, y, 0, False))
+                shortestPoi = poi
+            else:
+                if (self.distanceBetweenPoi(poi, poi_node(0, "", x, y, 0, False)) < shortestDistance):
+                    shortestDistance = self.distanceBetweenPoi(poi, poi_node(0, "", x, y, 0, False))
+                    shortestPoi = poi
+        return shortestPoi
+
+    def convertCoordsToPlayerPOI(self, coords: tuple) -> poi_node:
+        if (type(coords) != tuple):
+            raise TypeError("coords must be of type tuple, not " + str(type(coords)) + "!")
+        if (len(coords) != 2):
+            raise ValueError("coords must be of length 2")
+        if (type(coords[0]) != int):
+            raise TypeError("coords[0] must be of type int")
+        if (type(coords[1]) != int):
+            raise TypeError("coords[1] must be of type int")
+        returnPoint = poi_node(0, "", coords[0], coords[1], 0, False)
+        return returnPoint
+
+    def findAllNearPoi(self, mainPoi: poi_node, distance: int) -> list:
+        if (type(mainPoi) != poi_node):
+            raise TypeError("poi must be of type poi_node")
+        if (type(distance) != int):
+            raise TypeError("distance must be of type int")
+        nearPoi = []
+        for poi in self.__poi_list:
+            if (self.distanceBetweenPoi(mainPoi, poi) <= distance):
+                nearPoi.append(poi)
+        return nearPoi
+
+    def avoidPlayers(self, start: poi_node, end: poi_node, playerLocations: list) -> list:
+        if (type(start) != poi_node):
+            raise TypeError("start must be of type poi_node")
+        if (type(end) != poi_node):
+            raise TypeError("end must be of type poi_node")
+        if (type(playerLocations) != list):
+            raise TypeError("playerLocations must be of type list")
+        playerAvoidNodes = []
+        for location in playerLocations:
+            playerAvoidNodes.append(self.convertCoordsToPlayerPOI(location))
+        nearestLocations = []
+        for poi in playerAvoidNodes:
+            nearestLocations.append(self.findAllNearPoi(poi, 250))
+        print("Avoiding players at:")
+        for poi in nearestLocations:
+            for poi2 in poi:
+                poi2.setAvoid(True)
+                print("\t"+poi2.getName())
+        start.setAvoid(False)
+        end.setAvoid(False)
+        try:
+            path = self.findShortestPath(start, end)
+        except AttributeError:
+            print("No path found, trying again with a more risky path")
+            for poi in nearestLocations:
+                for poi2 in poi:
+                    poi2.setAvoid(False)
+                for poi in playerAvoidNodes:
+                    nearestLocations.append(self.findAllNearPoi(poi, 125))
+            print("Avoiding players at:")
+            for poi in nearestLocations:
+                for poi2 in poi:
+                    poi2.setAvoid(True)
+                    print("\t"+poi2.getName())
+            start.setAvoid(False)
+            end.setAvoid(False)
+            try:
+                path = self.findShortestPath(start, end)
+            except AttributeError:
+                print("Still no path found, even with a more risky path")
+                exit()
         return path
 
     def __repr__(self):

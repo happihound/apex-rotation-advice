@@ -1,3 +1,4 @@
+import math
 import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt
@@ -13,9 +14,10 @@ def main():
     myCoordinator = coordinator()
     myCoordinator.loadMap("WE")
     totalDistance = 0
-    start = myCoordinator.getPoi(poiID=7)
-    end = myCoordinator.getPoi(poiID=65)
-    path = myCoordinator.findShortestPath(start, end)
+    start = myCoordinator.getPoi(poiID=28)
+    end = myCoordinator.getPoi(poiID=71)
+    avoidCoords = doImage()
+    path = myCoordinator.avoidPlayers(start, end, avoidCoords)
     for i in range(len(path) - 1):
         totalDistance += myCoordinator.distanceBetweenPoi(path[i], path[i + 1])
     print("Start: " + start.getName())
@@ -30,29 +32,34 @@ def main():
         xcoords.append(path[i].getX())
         ycoords.append(path[i].getY())
     plt.imshow(cv.imread("game_map/default/mapWE.png", cv.IMREAD_GRAYSCALE), cmap='gray')
+    for i in range(len(avoidCoords)):
+        plt.scatter(avoidCoords[i][0], avoidCoords[i][1], s=30, color='red')
     plt.plot(xcoords, ycoords)
     plt.show()
 
 
-def main2():
-    cv2Image = cv.imread("test_images/4by3/test_image1_4by3.png")
+def doImage():
+    cv2Image = cv.imread("test_images/4by3/test_image3_4by3.png")
     #cv2Image = cv.imread("test_images/16by10/test_image1_16by10.png")
     # Create an object of gameMapImage data type
     image = gameMapImage(cv2Image, "4by3")
+    # cv.imshow("changedImage", image())
+    # cv.waitKey(0)
     # Run the prepareMap class on the image
-    changedImage = prepareMap(image).run()
-    cv.imshow("formatted", image())
-    cv.waitKey(0)
+   # image = gameMapImage(cv2Image, "16by10")
+    changedImage = prepareMap(image)
+    changedImage = changedImage.run()
+    # cv.imshow("changedImage", changedImage())
+    # cv.waitKey(0)
     # Show the image
-    image = thresholdImage(changedImage)
-    cv.imshow("thresholdImage", image.image())
-    cv.waitKey(0)
-    countRedChevons(image)
-    cv.destroyAllWindows()
+    changedImage = thresholdImage(changedImage)
+    # cv.imshow("changedImage", changedImage())
+    # cv.waitKey(0)
+    return findRedDots(changedImage)
 
 
 def thresholdImage(image):
-    # threshold all the pixels that arent bright red
+    # threshold all the pixels that arent red
     ratio = image.ratio()
     image = image.image()
 
@@ -60,63 +67,100 @@ def thresholdImage(image):
     hsv = cv.cvtColor(image, cv.COLOR_BGR2HSV)
 
     # define range of red color in hsv
+    # some of the colors wrap around the hue value, so we have to define two ranges
     lower_red = np.array([0, 100, 100])
     upper_red = np.array([10, 255, 255])
+    lower_red2 = np.array([160, 100, 100])
+    upper_red2 = np.array([179, 255, 255])
 
     # threshold the hsv image to get only red colors
     mask = cv.inRange(hsv, lower_red, upper_red)
 
+    mask2 = cv.inRange(hsv, lower_red2, upper_red2)
+
     # bitwise and mask and original image
     res = cv.bitwise_and(image, image, mask=mask)
+
+    res2 = cv.bitwise_and(image, image, mask=mask2)
+
+    res = cv.bitwise_or(res, res2)
+    # erode to remove noise
+    res = cv.erode(res, None, iterations=1)
+    # dilate to fill in gaps
+    res = cv.dilate(res, None, iterations=1)
 
     return gameMapImage(res, ratio)
 
 
-def countRedChevons(image):
-    # convert the image to grayscale
-    gray = cv.cvtColor(image.image(), cv.COLOR_BGR2GRAY)
-
-    # blur it slightly
-    thresh = cv.GaussianBlur(gray, (15, 15), 0)
-
-    labels = cv.connectedComponentsWithStats(thresh)
-    mask = np.zeros(thresh.shape, dtype="uint8")
-
-    # loop over the unique components
-    for i in range(0, labels[0]):
-        # if this is the first component then we examine the
-        # *background* (typically we would just ignore this
-        # component in our loop)
-        if i == 0:
-            text = "examining component {}/{}".format(i + 1,
-                                                      labels[0])
-            print("[INFO] {}".format(text))
-            continue
-
-        # otherwise, construct the label mask and count the
-        # number of pixels
-        print("[INFO] examining component {}/{}".format(i + 1,
-                                                        labels[0]))
-        labelMask = np.zeros(thresh.shape, dtype="uint8")
-        labelMask[labels[1] == i] = 255
-        numPixels = cv.countNonZero(labelMask)
-
-        # if the number of pixels in the component is sufficiently
-        # large, then add it to our mask of "large blobs"
-        if numPixels > 300:
-            mask = cv.add(mask, labelMask)
-
-    # find the contours in the mask, then sort them from left to
-    # right
-    cnts = cv.findContours(mask.copy(), cv.RETR_EXTERNAL,
-                           cv.CHAIN_APPROX_SIMPLE)
+def findRedDots(image):
+    # find the red dots
+    image = gameMapImage(cv.cvtColor(image(), cv.COLOR_BGR2GRAY), image.ratio())
+    image = gameMapImage(cv.GaussianBlur(image(), (5, 5), 0), image.ratio())
+    # image = cv.Canny(image, 50, 100)
+    # image = cv.dilate(image, None, iterations=1)
+    # image = cv.erode(image, None, iterations=1)
+    # cv.imshow("canny", image)
+    # cv.waitKey(0)
+    # image = cv.threshold(image, 0, 255, cv.THRESH_BINARY_INV | cv.THRESH_OTSU)[1]
+    # cv.imshow("threshold", image)
+    # cv.waitKey(0)
+    cnts = cv.findContours(image(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
     cnts = imutils.grab_contours(cnts)
-
-    print("[INFO] {} unique contours found".format(len(cnts)))
-    cv.imshow("Mask", mask)
-    cv.waitKey(0)
-
     # loop over the contours
+    circles = []
+    for c in cnts:
+        # compute the center of the contour
+        M = cv.moments(c)
+        if M["m00"] != 0:
+            cX = int((M["m10"] / M["m00"]))
+            cY = int((M["m01"] / M["m00"]))
+            #print("cX: " + str(cX) + " cY: " + str(cY))
+            # draw the contour and center of the shape on the image
+            cv.drawContours(image(), [c], -1, (0, 255, 0), 2)
+            minshape = cv.minEnclosingCircle(c)
+            circles.append(minshape)
+            # filter out huge circle
+    i = 0
+    toDraw = filterCirlces(circles)
+
+    for circle in toDraw:
+        cv.circle(image(), (int(circle[0][0]), int(circle[0][1])), int(circle[1]), (255, 255, 255), 2)
+    print(len(toDraw))
+    returnPoints = []
+    for circle in toDraw:
+        returnPoints.append((int(circle[0][0]), int(circle[0][1])))
+    for i in range(len(returnPoints)):
+        returnPoints[i] = (int(returnPoints[i][0]*(4096/800)), int(returnPoints[i][1]*(4096/800)))
+    return returnPoints
+
+
+def filterCirlces(circles):
+    toDraw = []
+    toRemove = []
+    for circle in circles:
+        for circle2 in circles:
+            if circle != circle2:
+                if circle2[1] > 15:
+                    continue
+                distance = math.sqrt((circle[0][0]-circle2[0][0])**2+(circle[0][1]-circle2[0][1])**2)
+                if (distance < (circle[1]+circle2[1]+(circle[1]+circle2[1])*0.5)):
+                    newCircle = ((circle[0][0]+circle2[0][0])/2, (circle[0]
+                                 [1]+circle2[0][1])/2), (circle[1]+circle2[1]+(circle[1]+circle2[1])*0.5)
+                    if newCircle not in toDraw:
+                        toDraw.append(newCircle)
+                    toRemove.append(circle)
+                    toRemove.append(circle2)
+                    break
+                else:
+                    if circle not in toDraw:
+                        toDraw.append(circle)
+    for circle in toRemove:
+        toDraw = remove(toDraw, circle)
+    return toDraw
+
+
+def remove(the_list, val):
+    return [value for value in the_list if value != val]
 
 
 if __name__ == "__main__":

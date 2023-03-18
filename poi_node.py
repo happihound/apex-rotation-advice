@@ -1,5 +1,5 @@
 class poi:
-    __slots__ = ['__poiID', '__poiName', '__x', '__y', '__radius', '__neighbors', '__isChoke']
+    __slots__ = ['__poiID', '__poiName', '__x', '__y', '__radius', '__neighbors', '__isChoke', '__avoid']
 
     def __init__(self, poiID: int, poiName: str, x: int, y: int, radius: int, isChoke: bool, neighbors: list = []):
         self.__poiID = poiID
@@ -9,6 +9,7 @@ class poi:
         self.__radius = radius
         self.__neighbors = []
         self.__isChoke = isChoke
+        self.__avoid = False
 
     def addAssociation(self, neighbor: 'poi') -> None:
         if (type(neighbor) != poi):
@@ -19,7 +20,11 @@ class poi:
             neighbor.addAssociation(self)
 
     def getAssociations(self) -> list:
-        return self.__neighbors
+        returnNeighbors = []
+        for neighbor in self.__neighbors:
+            if (neighbor.getAvoid() == False):
+                returnNeighbors.append(neighbor)
+        return returnNeighbors
 
     def getAssociationNames(self) -> list:
         names = []
@@ -48,6 +53,12 @@ class poi:
     def getChoke(self) -> bool:
         return self.__isChoke
 
+    def setAvoid(self, avoid: bool) -> None:
+        self.__avoid = avoid
+
+    def getAvoid(self) -> bool:
+        return self.__avoid
+
     def __str__(self) -> str:
         return "poiID: " + str(self.__poiID) + ", poiName: " + self.__poiName + ", x: " + str(self.__x) + ", y: " + str(self.__y) + ", radius: " + str(self.__radius) + ", isChoke: " + str(self.__isChoke)
 
@@ -55,7 +66,7 @@ class poi:
         return str(self)
 
     def __eq__(self, other: 'poi') -> bool:
-        return self.__poiID == other.__poiID
+        return self.__poiID == other.getID() and self.__poiName == other.getName() and self.__x == other.getX() and self.__y == other.getY() and self.__radius == other.getRadius() and self.__isChoke == other.getChoke()
 
     def __hash__(self) -> int:
         return hash(self.__poiID)

@@ -62,6 +62,7 @@ class prepareMap:
 
     def __changeImageAspectRatio(self, image: np.ndarray) -> np.ndarray:
         image = cv.resize(image, (image.shape[0], image.shape[0]), interpolation=cv.INTER_AREA)
+        image = cv.resize(image, (800, 800), interpolation=cv.INTER_AREA)
         return image
 
 # Path: gameMapImage.py

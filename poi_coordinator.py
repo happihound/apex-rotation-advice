@@ -11,14 +11,6 @@ class coordinator:
         self.__poi_dict = {}
         self.__poi_count = 0
 
-    def loadMap(self, mapName: str) -> None:
-        if (type(mapName) != str):
-            raise TypeError("mapName must be of type str")
-        # Right now we only have WE, so we'll override the mapName
-        # self.__map = mapName       #uncomment this line when we have more maps
-        self.__map = "WE"
-        self.__loadPoi("poi_" + self.__map + ".csv")
-
     def __addPoi(self, poi: poi_node) -> None:
         if (type(poi) != poi_node):
             raise TypeError("poi must be of type poi_node")
@@ -54,6 +46,14 @@ class coordinator:
                             continue
                         currentPoi.addAssociation(self.getPoi(poiID=int(ID)))
 
+    def loadMap(self, mapName: str) -> None:
+        if (type(mapName) != str):
+            raise TypeError("mapName must be of type str")
+        # Right now we only have WE, so we'll override the mapName
+        # self.__map = mapName       #uncomment this line when we have more maps
+        self.__map = "WE"
+        self.__loadPoi("poi_" + self.__map + ".csv")
+
     def getPoiList(self) -> list:
         return self.__poi_list
 
@@ -85,6 +85,36 @@ class coordinator:
         if (poiName != ""):
             return self.__poi_dict[poiName]
         raise ValueError("An error has occurred")
+
+    def distanceBetweenPoi(self, point1: poi_node, point2: poi_node) -> int:
+        if (type(point1) != poi_node):
+            raise TypeError("point1 must be of type poi_node")
+        if (type(point2) != poi_node):
+            raise TypeError("point2 must be of type poi_node")
+        return int(((point1.getX() - point2.getX())**2 + (point1.getY() - point2.getY())**2)**0.5)
+
+    def findShortestPath(self, start: poi_node, end: poi_node) -> list:
+        if (type(start) != poi_node):
+            raise TypeError("start must be of type poi_node")
+        if (type(end) != poi_node):
+            raise TypeError("end must be of type poi_node")
+        path = []
+        path.append(start)
+        while (path[-1] != end):
+            shortestDistance = 1
+            shortestPoi = None
+            for poi in path[-1].getAssociations():
+                if (poi in path):
+                    continue
+                if (shortestDistance == 1):
+                    shortestDistance = self.distanceBetweenPoi(poi, end)
+                    shortestPoi = poi
+                else:
+                    if (self.distanceBetweenPoi(poi, end) < shortestDistance):
+                        shortestDistance = self.distanceBetweenPoi(poi, end)
+                        shortestPoi = poi
+            path.append(shortestPoi)
+        return path
 
     def __repr__(self):
         return str(self.__poi_list)

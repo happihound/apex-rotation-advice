@@ -5,34 +5,32 @@ from prepareMap import prepareMap
 from gameMapImage import gameMapImage
 import imutils
 import csv
+from poi_coordinator import coordinator
+from poi_node import poi
 
 
 def main():
-    # take in the csv from nodes/poi_WE.csv
-    # the csv is in the format of: id,name, x, y, radius, type
-    # where type is either choke or poi
-    # if it is a choke, then it is a point, if it is a poi, then it is a circle
-    # graph using matplotlib
-    # create a graph of the map
-    x = []
-    y = []
-    radius = []
-    i = 0
-    with open("game_map/nodes/poi_WE.csv", "r") as f:
-        reader = csv.reader(f)
-        next(reader)
-        for row in reader:
-            print(row)
-            i += 1
-            x.append(int(row[2]))
-            y.append(int(row[3]))
-            if "True" in row[5]:
-                radius.append(9*2)
-            else:
-                radius.append(int(row[4])*2)
-    # load the image from game_map/default/mapWE.png and display in the graph
-    plt.scatter(x, y, s=radius)
-    plt.imshow(cv.imread("game_map/default/mapWE.png"))
+    myCoordinator = coordinator()
+    myCoordinator.loadMap("WE")
+    totalDistance = 0
+    start = myCoordinator.getPoi(poiID=7)
+    end = myCoordinator.getPoi(poiID=65)
+    path = myCoordinator.findShortestPath(start, end)
+    for i in range(len(path) - 1):
+        totalDistance += myCoordinator.distanceBetweenPoi(path[i], path[i + 1])
+    print("Start: " + start.getName())
+    print("End: " + end.getName())
+    print("Total distance: " + str(totalDistance))
+    print("Path: ")
+    for i in range(len(path)):
+        print("\t"+path[i].getName())
+    xcoords = []
+    ycoords = []
+    for i in range(len(path)):
+        xcoords.append(path[i].getX())
+        ycoords.append(path[i].getY())
+    plt.imshow(cv.imread("game_map/default/mapWE.png", cv.IMREAD_GRAYSCALE), cmap='gray')
+    plt.plot(xcoords, ycoords)
     plt.show()
 
 
@@ -122,4 +120,4 @@ def countRedChevons(image):
 
 
 if __name__ == "__main__":
-    main2()
+    main()

@@ -35,7 +35,8 @@ def main():
 
     plt.scatter(x, y, s=radius, color='green')
     for value in range(len(assocationLinesX)):
-        plt.plot(assocationLinesX[value], assocationLinesY[value], color='red')
+        pass
+        plt.plot(assocationLinesX[value], assocationLinesY[value], color='red', linewidth=0.2)
     plt.imshow(cv.imread("game_map/default/mapWE.png", cv.IMREAD_GRAYSCALE), cmap='gray')
     # print all clicks
 

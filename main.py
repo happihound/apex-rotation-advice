@@ -122,4 +122,4 @@ def countRedChevons(image):
 
 
 if __name__ == "__main__":
-    main()
+    main2()

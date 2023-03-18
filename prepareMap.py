@@ -14,7 +14,7 @@ class prepareMap:
 
         __slots__ = ["image", "ratio", "run"]
 
-    def run(self):
+    def run(self) -> gameMapImage:
         if self.ratio == "":
             self.ratio = self.__detectAspectRatio(self.image.shape)
         cropSize = self.__returnCropSize(self.image.shape, self.ratio)
@@ -26,7 +26,7 @@ class prepareMap:
     # change to a 1:1 aspect ratio
     # change to 800x800
 
-    def __detectAspectRatio(self, imageShape):
+    def __detectAspectRatio(self, imageShape: tuple[int, int, int]) -> str:
         height, width, channels = imageShape
         if height * 4 == width * 3:
             return "4:3"
@@ -36,12 +36,12 @@ class prepareMap:
             return "16:9"
         raise ValueError("Invalid aspect ratio", height, width)
 
-    def __cropImage(self, image, cropSize):
+    def __cropImage(self, image: np.ndarray, cropSize: tuple[tuple[int, int], tuple[int, int], tuple[int, int], tuple[int, int]]) -> np.ndarray:
         topLeft, topRight, bottomLeft, bottomRight = cropSize
         croppedImage = image[topLeft[1]:bottomLeft[1], topLeft[0]:topRight[0]]
         return croppedImage
 
-    def __returnCropSize(self, imageShape, ratio):
+    def __returnCropSize(self, imageShape: tuple[int, int, int], ratio: str) -> tuple[tuple[int, int], tuple[int, int], tuple[int, int], tuple[int, int]]:
         height, width, channels = imageShape
         # The dictionary is in the format {aspectRatio: (leftMarginRatio, righMarginRatip, bottomMarginRatio)}
         if "by" in ratio:
@@ -50,7 +50,6 @@ class prepareMap:
                                                                       1680, 62/1050), "16:9": (420/1920, 485/1920, 64/1080)}
         if ratio not in scalarDict:
             raise ValueError("Invalid aspect ratio", ratio)
-
         leftWidthRatio, rightWidthRatio, bottomHeightRatio = scalarDict[ratio]
         rightWidth = int(width * rightWidthRatio)
         leftWidth = int(width * leftWidthRatio)
@@ -61,7 +60,7 @@ class prepareMap:
         bottomRight = (width - rightWidth, height - bottomHeight)
         return (topLeft, topRight, bottomLeft, bottomRight)
 
-    def __changeImageAspectRatio(self, image):
+    def __changeImageAspectRatio(self, image: np.ndarray) -> np.ndarray:
         image = cv.resize(image, (image.shape[0], image.shape[0]), interpolation=cv.INTER_AREA)
         return image
 

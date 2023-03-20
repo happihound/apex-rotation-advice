@@ -101,7 +101,6 @@ class coordinator:
         path = []
         path.append(start)
         while (path[-1] != end):
-            print(path[-1].getName())
             shortestDistance = 1
             shortestPoi = None
             for poi in path[-1].getAssociations():
@@ -132,6 +131,7 @@ class coordinator:
                 if (self.distanceBetweenPoi(poi, poi_node(0, "", x, y, 0, False)) < shortestDistance):
                     shortestDistance = self.distanceBetweenPoi(poi, poi_node(0, "", x, y, 0, False))
                     shortestPoi = poi
+            shortestPoi = poi
         return shortestPoi
 
     def convertCoordsToPlayerPOI(self, coords: tuple) -> poi_node:
@@ -164,12 +164,19 @@ class coordinator:
             raise TypeError("end must be of type poi_node")
         if (type(playerLocations) != list):
             raise TypeError("playerLocations must be of type list")
+
+        path = self.__internalAvoidPlayers(start, end, playerLocations, 1)
+        return path
+
+    def __internalAvoidPlayers(self, start: poi_node, end: poi_node, playerLocations: list, attempt: int) -> list:
+        if attempt > 5:
+            raise ValueError("Too many attempts to find a path")
         playerAvoidNodes = []
         for location in playerLocations:
             playerAvoidNodes.append(self.convertCoordsToPlayerPOI(location))
         nearestLocations = []
         for poi in playerAvoidNodes:
-            nearestLocations.append(self.findAllNearPoi(poi, 250))
+            nearestLocations.append(self.findAllNearPoi(poi, (250//attempt)))
         print("Avoiding players at:")
         for poi in nearestLocations:
             for poi2 in poi:
@@ -180,24 +187,11 @@ class coordinator:
         try:
             path = self.findShortestPath(start, end)
         except AttributeError:
-            print("No path found, trying again with a more risky path")
-            for poi in nearestLocations:
-                for poi2 in poi:
-                    poi2.setAvoid(False)
-                for poi in playerAvoidNodes:
-                    nearestLocations.append(self.findAllNearPoi(poi, 125))
-            print("Avoiding players at:")
-            for poi in nearestLocations:
-                for poi2 in poi:
-                    poi2.setAvoid(True)
-                    print("\t"+poi2.getName())
-            start.setAvoid(False)
-            end.setAvoid(False)
-            try:
-                path = self.findShortestPath(start, end)
-            except AttributeError:
-                print("Still no path found, even with a more risky path")
-                exit()
+            print("No path found on : " + str(attempt) +
+                  " attempt, trying again with a risky path (avoid players further than: " + str(250//attempt+1) + ")")
+            for poi in self.__poi_list:
+                poi.setAvoid(False)
+            return self.__internalAvoidPlayers(start, end, playerLocations, attempt+1)
         return path
 
     def __repr__(self):

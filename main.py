@@ -15,9 +15,13 @@ def main():
     myCoordinator.loadMap("WE")
     totalDistance = 0
     start = myCoordinator.getPoi(poiID=28)
-    end = myCoordinator.getPoi(poiID=71)
+    end = myCoordinator.getPoi(poiID=28)
+    start2 = myCoordinator.getPoi(poiID=71)
+    end2 = myCoordinator.getPoi(poiID=39)
     avoidCoords = doImage()
     path = myCoordinator.avoidPlayers(start, end, avoidCoords)
+    #path2 = myCoordinator.avoidPlayers(start2, end2, avoidCoords)
+    #path = path + path2
     for i in range(len(path) - 1):
         totalDistance += myCoordinator.distanceBetweenPoi(path[i], path[i + 1])
     print("Start: " + start.getName())
@@ -35,18 +39,21 @@ def main():
     for i in range(len(avoidCoords)):
         plt.scatter(avoidCoords[i][0], avoidCoords[i][1], s=30, color='red')
     plt.plot(xcoords, ycoords)
+
     plt.show()
+    plt.pause(0.001)
 
 
 def doImage():
-    cv2Image = cv.imread("test_images/4by3/test_image3_4by3.png")
-    #cv2Image = cv.imread("test_images/16by10/test_image1_16by10.png")
+    # cv2Image =
+    # cv2Image =
     # Create an object of gameMapImage data type
-    image = gameMapImage(cv2Image, "4by3")
+    #image = gameMapImage(cv.imread("test_images/4by3/test_image3_4by3.png"), "4by3")
+    #image = gameMapImage(cv.imread("test_images/16by9/test_image2_16by9.png"), "16by9")
+    image = gameMapImage(cv.imread("test_images/16by10/test_image1_16by10.png"), "16by10")
     # cv.imshow("changedImage", image())
     # cv.waitKey(0)
     # Run the prepareMap class on the image
-   # image = gameMapImage(cv2Image, "16by10")
     changedImage = prepareMap(image)
     changedImage = changedImage.run()
     # cv.imshow("changedImage", changedImage())

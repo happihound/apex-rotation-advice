@@ -36,11 +36,31 @@ def main():
     plt.scatter(x, y, s=radius, color='green')
     for value in range(len(assocationLinesX)):
         pass
-        plt.plot(assocationLinesX[value], assocationLinesY[value], color='red', linewidth=0.2)
+        # plt.plot(assocationLinesX[value], assocationLinesY[value], color='red', linewidth=0.2)
     plt.imshow(cv.imread("game_map/default/mapWE.png", cv.IMREAD_GRAYSCALE), cmap='gray')
     # print all clicks
 
     def onclick(event):
+        xClick = int(event.xdata)
+        yClick = int(event.ydata)
+        clickType = event.button
+        if clickType == 1:
+            plt.cla()
+            plt.scatter(x, y, s=radius, color='green')
+            plt.imshow(cv.imread("game_map/default/mapWE.png", cv.IMREAD_GRAYSCALE), cmap='gray')
+            plt.pause(0.001)
+            plt.show()
+            for i in range(len(x)):
+                if xClick > x[i] - radius[i] and xClick < x[i] + radius[i] and yClick > y[i] - radius[i] and yClick < y[i] + radius[i]:
+                    primaryNode = myCoordinator.getPoi(poiID=i+1)
+                    associatedPois = primaryNode.getAssociations()
+                    for poi in associatedPois:
+                        plt.plot((primaryNode.getX(), poi.getX()),
+                                 (primaryNode.getY(), poi.getY()), color='red', linewidth=0.3)
+            plt.pause(0.001)
+            plt.show()
+
+    def onclick1(event):
         xClick = event.xdata
         yClick = event.ydata
         clickType = event.button

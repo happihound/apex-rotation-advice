@@ -22,6 +22,12 @@ class coordinator:
     def getPoiList(self) -> list:
         return self.__poi_list
 
+    def getPoiListNames(self) -> list:
+        names = []
+        for poi in self.__poi_list:
+            names.append(poi.getName())
+        return names
+
     def getPoiDict(self) -> dict:
         return self.__poi_dict
 

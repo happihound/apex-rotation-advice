@@ -7,7 +7,7 @@ delay = 2000
 
 
 def test_returnCropSize_16by10():
-    cv2Image = cv.imread("test_images/16by10/test_image1_16by10.png")
+    cv2Image = cv.imread("tests/test_images/16by10/test_image1_16by10.png")
     image = gameMapImage(cv2Image, "16by10")
     changedImage = prepareMap(image)
     changedImage = changedImage.run()
@@ -17,7 +17,7 @@ def test_returnCropSize_16by10():
 
 
 def test_returnCropSize_4by3():
-    cv2Image = cv.imread("test_images/4by3/test_image1_4by3.png")
+    cv2Image = cv.imread("tests/test_images/4by3/test_image1_4by3.png")
     image = gameMapImage(cv2Image, "4by3")
     changedImage = prepareMap(image)
     changedImage = changedImage.run()
@@ -27,7 +27,7 @@ def test_returnCropSize_4by3():
 
 
 def test_returnCropSize_16by9():
-    cv2Image = cv.imread("test_images/16by9/test_image1_16by9.png")
+    cv2Image = cv.imread("tests/test_images/16by9/test_image1_16by9.png")
     image = gameMapImage(cv2Image, "16by9")
     changedImage = prepareMap(image)
     changedImage = changedImage.run()
@@ -37,7 +37,7 @@ def test_returnCropSize_16by9():
 
 
 def test_wrongApspectRatio():
-    cv2Image = cv.imread("test_images/16by9/test_image1_16by9.png")
+    cv2Image = cv.imread("tests/test_images/16by9/test_image1_16by9.png")
     image = gameMapImage(cv2Image, "21by9")
     changedImage = prepareMap(image)
     try:

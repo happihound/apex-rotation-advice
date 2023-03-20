@@ -1,14 +1,12 @@
 import pathlib
 import unittest
-import os
-from os.poi_node import poi as poi_node
-from src.poi_coordinator import coordinator
+from poi_node import poi as poi_node
+from poi_coordinator import coordinator
 import matplotlib.pyplot as plt
 import numpy as np
 import pytest
 import csv
 import sys
-sys.path.append("..")  # added!
 
 
 def test_makeCoordinator():
@@ -55,15 +53,19 @@ def test_getPoiList():
             if "ASSOCIATION" in line:
                 break
             # Add each point of interest to the list
-            poiList.append(line.split(',')[0])
+            poiList.append(line.split(',')[1].strip())
 
-    returnedPoiList = myCoordinator.getPoiList()
-
-    # Check that the list of points of interest in the map file matches the list of points of interest in the coordinator object
-    assert returnedPoiList == poiList, "The list of points of interest in the map file does not match the list of points of interest in the coordinator object"
+    returnedPoiList = myCoordinator.getPoiListNames()
     # Check that the list of points of interest is at least one element long
     assert len(poiList) > 0, "The list of points of interest is empty"
+    # Check that the lists are the same length
+    assert len(poiList) == len(
+        returnedPoiList), "The list of points of interest in the map file does not match the list of points of interest in the coordinator object"
+    # Check that the list of points of interest in the map file matches the list of points of interest in the coordinator object
+    for value in poiList:
+        assert value in returnedPoiList, "The list of points of interest in the map file does not match the list of points of interest in the coordinator object, at " + value
     # Check that the first element of the list is a poi_node object
+    poiList = myCoordinator.getPoiList()
     assert isinstance(
         poiList[0], poi_node), "The first element of the list of points of interest is not a poi_node object"
 

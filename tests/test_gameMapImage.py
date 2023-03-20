@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from gameMapImage import gameMapImage
 from pytest import approx
-from prepareMap import prepareMap
+from userMapImage import userMapImage
 
 
 def test_return_ratio_16by10():

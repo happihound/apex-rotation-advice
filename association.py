@@ -1,7 +1,7 @@
 import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt
-from prepareMap import prepareMap
+from userMapImage import userMapImage
 from gameMapImage import gameMapImage
 import imutils
 import csv

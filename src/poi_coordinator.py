@@ -11,41 +11,6 @@ class coordinator:
         self.__poi_dict = {}
         self.__poi_count = 0
 
-    def __addPoi(self, poi: poi_node) -> None:
-        if (type(poi) != poi_node):
-            raise TypeError("poi must be of type poi_node")
-        self.__poi_list.append(poi)
-        self.__poi_dict[poi.getName()] = poi
-        self.__poi_count += 1
-
-    def __loadPoi(self, poiFile: str) -> None:
-        poiFile = "game_map/nodes/" + poiFile
-        onAssociation = False
-        with open(poiFile, "r") as f:
-            reader = csv.reader(f)
-            next(reader)
-            for row in reader:
-                if "ASSOCIATION" in row:
-                    onAssociation = True
-                    continue
-                if onAssociation == False:
-                    choke = False
-                    for i in range(len(row)):
-                        row[i] = row[i].strip()
-                    if "True" in row[5]:
-                        choke = True
-                    else:
-                        choke = False
-                    poi = poi_node(int(row[0]), row[1], int(row[2]), int(row[3]), int(row[4]), choke)
-                    self.__addPoi(poi)
-                if onAssociation == True:
-                    currentPoi = self.getPoi(poiID=int(row[0]))
-                    for ID in row[1:]:
-                        ID = ID.strip()
-                        if ID == "":
-                            continue
-                        currentPoi.addAssociation(self.getPoi(poiID=int(ID)))
-
     def loadMap(self, mapName: str) -> None:
         if (type(mapName) != str):
             raise TypeError("mapName must be of type str")
@@ -85,6 +50,9 @@ class coordinator:
         if (poiName != ""):
             return self.__poi_dict[poiName]
         raise ValueError("An error has occurred")
+
+    def getNumberOfPoi(self) -> int:
+        return self.__poi_count
 
     def distanceBetweenPoi(self, point1: poi_node, point2: poi_node) -> int:
         if (type(point1) != poi_node):
@@ -151,6 +119,8 @@ class coordinator:
             raise TypeError("poi must be of type poi_node")
         if (type(distance) != int):
             raise TypeError("distance must be of type int")
+        if (distance < 0):
+            raise ValueError("distance must be greater than 0")
         nearPoi = []
         for poi in self.__poi_list:
             if (self.distanceBetweenPoi(mainPoi, poi) <= distance):
@@ -164,6 +134,8 @@ class coordinator:
             raise TypeError("end must be of type poi_node")
         if (type(playerLocations) != list):
             raise TypeError("playerLocations must be of type list")
+        if (len(playerLocations) == 0):
+            raise ValueError("playerLocations must not be empty")
 
         path = self.__internalAvoidPlayers(start, end, playerLocations, 1)
         return path
@@ -193,6 +165,43 @@ class coordinator:
                 poi.setAvoid(False)
             return self.__internalAvoidPlayers(start, end, playerLocations, attempt+1)
         return path
+
+    def __addPoi(self, poi: poi_node) -> None:
+        if (type(poi) != poi_node):
+            raise TypeError("poi must be of type poi_node")
+        if (poi.getName() in self.__poi_dict):
+            raise ValueError("poi: " + poi.getName() + " already exists!")
+        self.__poi_list.append(poi)
+        self.__poi_dict[poi.getName()] = poi
+        self.__poi_count += 1
+
+    def __loadPoi(self, poiFile: str) -> None:
+        poiFile = "game_map/nodes/" + poiFile
+        onAssociation = False
+        with open(poiFile, "r") as f:
+            reader = csv.reader(f)
+            next(reader)
+            for row in reader:
+                if "ASSOCIATION" in row:
+                    onAssociation = True
+                    continue
+                if onAssociation == False:
+                    choke = False
+                    for i in range(len(row)):
+                        row[i] = row[i].strip()
+                    if "True" in row[5]:
+                        choke = True
+                    else:
+                        choke = False
+                    poi = poi_node(int(row[0]), row[1], int(row[2]), int(row[3]), int(row[4]), choke)
+                    self.__addPoi(poi)
+                if onAssociation == True:
+                    currentPoi = self.getPoi(poiID=int(row[0]))
+                    for ID in row[1:]:
+                        ID = ID.strip()
+                        if ID == "":
+                            continue
+                        currentPoi.addAssociation(self.getPoi(poiID=int(ID)))
 
     def __repr__(self):
         return str(self.__poi_list)

@@ -73,7 +73,7 @@ poiID, poiName, x, y, radius, isChoke
 72,Launch-Dome Choke, 2571, 3747, -1, True
 73,The Dome, 2939, 3791, 210, False
 74,Lava City - Dome Choke, 3061, 3513, -1, True
-75,Fissure - Countdown Choke, 878, 1379, -1, True
+75,North Fissure - Countdown Choke, 878, 1379, -1, True
 76,East Trials - Countdown Choke,880,1190, -1, True
 77,Frag East - Frag West Choke, 2400, 1721, -1, True
 78,Train - Train Station Choke, 1991, 960, -1, True

@@ -45,3 +45,10 @@ def test_wrongApspectRatio():
     except ValueError:
         return
     raise ValueError("21by9 ratio is not supported, but was not caught")
+
+
+if __name__ == "__main__":
+    test_returnCropSize_16by10()
+    test_returnCropSize_4by3()
+    test_returnCropSize_16by9()
+    test_wrongApspectRatio()

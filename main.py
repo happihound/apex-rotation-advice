@@ -2,7 +2,7 @@ import math
 import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt
-from userMapImage import userMapImage
+import userMapImage as mapImage
 from gameMapImage import gameMapImage
 import csv
 from poi_coordinator import coordinator
@@ -13,14 +13,16 @@ def main():
     myCoordinator = coordinator()
     myCoordinator.loadMap("WE")
     totalDistance = 0
-    start = myCoordinator.getPoi(poiID=28)
-    end = myCoordinator.getPoi(poiID=28)
-    start2 = myCoordinator.getPoi(poiID=71)
+    start = myCoordinator.getPoi(poiID=1)
+    end = myCoordinator.getPoi(poiID=74)
+    start2 = myCoordinator.getPoi(poiID=74)
     end2 = myCoordinator.getPoi(poiID=39)
-    avoidCoords =
+    usermap = cv.imread("tests/test_images/16by10/test_image4_16by10.png", cv.IMREAD_UNCHANGED)
+    userMapImage = mapImage.userMapImage(usermap, "16:10")
+    avoidCoords = userMapImage.getTargets()
     path = myCoordinator.avoidPlayers(start, end, avoidCoords)
-    #path2 = myCoordinator.avoidPlayers(start2, end2, avoidCoords)
-    #path = path + path2
+    path2 = myCoordinator.avoidPlayers(start2, end2, avoidCoords)
+    path = path + path2
     for i in range(len(path) - 1):
         totalDistance += myCoordinator.distanceBetweenPoi(path[i], path[i + 1])
     print("Start: " + start.getName())
@@ -34,11 +36,12 @@ def main():
     for i in range(len(path)):
         xcoords.append(path[i].getX())
         ycoords.append(path[i].getY())
-    plt.imshow(cv.imread("game_map/default/mapWE.png", cv.IMREAD_GRAYSCALE), cmap='gray')
+    WEmap = cv.imread("game_map/default/mapWE.png", cv.IMREAD_UNCHANGED)
+    WEmap = cv.cvtColor(WEmap, cv.COLOR_BGR2RGB)
+    plt.imshow(WEmap)
     for i in range(len(avoidCoords)):
         plt.scatter(avoidCoords[i][0], avoidCoords[i][1], s=30, color='red')
     plt.plot(xcoords, ycoords)
-
     plt.show()
     plt.pause(0.001)
 

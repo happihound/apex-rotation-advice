@@ -147,19 +147,22 @@ class coordinator:
         return path
 
     def __internalAvoidPlayers(self, start: poi_node, end: poi_node, playerLocations: list, attempt: int) -> list:
-        if attempt > 5:
+        if attempt > 10:
             raise ValueError("Too many attempts to find a path")
         playerAvoidNodes = []
         for location in playerLocations:
             playerAvoidNodes.append(self.convertCoordsToPlayerPOI(location))
         nearestLocations = []
+        if playerAvoidNodes == []:
+            return self.findShortestPath(start, end)
         for poi in playerAvoidNodes:
             nearestLocations.append(self.findAllNearPoi(poi, (250//attempt)))
         print("Avoiding players at:")
-        for poi in nearestLocations:
-            for poi2 in poi:
-                poi2.setAvoid(True)
-                print("\t"+poi2.getName())
+        if len(nearestLocations) > 0:
+            for poi in nearestLocations:
+                for poi2 in poi:
+                    poi2.setAvoid(True)
+                    print("\t"+poi2.getName())
         start.setAvoid(False)
         end.setAvoid(False)
         try:

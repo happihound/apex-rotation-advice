@@ -66,7 +66,12 @@ class poi:
         return str(self)
 
     def __eq__(self, other: 'poi') -> bool:
-        return self.__poiID == other.getID() and self.__poiName == other.getName() and self.__x == other.getX() and self.__y == other.getY() and self.__radius == other.getRadius() and self.__isChoke == other.getChoke()
+        try:
+            return self.__poiID == other.getID() and self.__poiName == other.getName() and self.__x == other.getX()
+        except AttributeError:
+            print("Error with comparing poi objects, the errors are as follows:" +
+                  self.__poiName + " and " + other.getName())
+        return False
 
     def __hash__(self) -> int:
         return hash(self.__poiID)

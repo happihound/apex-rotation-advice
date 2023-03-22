@@ -11,32 +11,45 @@ import imutils
 
 
 class userMapImage:
-    def __init__(self, cv2Image, ratio: str = "") -> None:
-        self.__image = gameMapImage(cv2Image, ratio)
-        self.__ratio = self.__image.ratio()
-        self.__thresheldImage = None
-        self.__targets = None
+    __slots__ = [
+        "__thresheldImage", "__targets", "__imageOriginalImage", "__croppedImage"]
 
-        __slots__ = ["__image", "__ratio", "run", "getThresheldImage", "findRedDots", "__thresheldImage"]
+    def __init__(self, cv2Image: np.ndarray, ratio: str = "") -> None:
+        self.__imageOriginalImage = gameMapImage(cv2Image, ratio)
+        # If the aspect ratio is not set, detect it from the image
+        if self.__imageOriginalImage.ratio() == "":
+            self.__imageOriginalImage = gameMapImage(self.__imageOriginalImage(), self.__detectAspectRatio())
 
-    def run(self) -> gameMapImage:
-        if self.__ratio == "":
-            self.ratio = self.__detectAspectRatio()
-        cropSize = self.__returnCropSize(self.__image().shape, self.ratio)
-        croppedImage = self.__cropImage(self.__image(), cropSize)
-        changedImage = self.__changeImageAspectRatio(croppedImage)
-        self.__thresheldImage = self.getThresheldImage()
-        return gameMapImage(changedImage, self.ratio)
-    # Takes a cv2 image and returns a cv2 image
-    # change to a 1:1 aspect ratio
-    # change to 800x800
+        # Determine the crop size by the aspect ratio
+        cropSize = self.__returnCropSize(self.__imageOriginalImage.shape(), self.__imageOriginalImage.ratio())
+
+        # Change the image aspect ratio
+        self.__croppedImage = gameMapImage(self.__changeImageAspectRatio(
+            self.__cropImage(self.__imageOriginalImage(), cropSize)), "1:1")
+
+        # Get the thresheld image
+        self.__thresheldImage = gameMapImage(self.__makeThresholdImage(), "1:1")
+
+        # Find the red dots
+        self.__targets = self.__findRedDots()
 
     def getThresheldImage(self) -> gameMapImage:
-        return gameMapImage.thresholdImage(self.__image)
+        if self.__thresheldImage is None:
+            self.__thresheldImage = gameMapImage(self.__makeThresholdImage(), "1:1")
+        return self.__thresheldImage
 
-    def findRedDots(self) -> list:
+    def getOriginalImage(self) -> gameMapImage:
+        return self.__imageOriginalImage
+
+    def getCroppedImage(self) -> gameMapImage:
+        return self.__croppedImage
+
+    def getTargets(self) -> list:
+        return self.__targets
+
+    def __findRedDots(self) -> list:
         # find the red dots
-        image = gameMapImage(cv.cvtColor(self.__image(), cv.COLOR_BGR2GRAY), self.__image.ratio())
+        image = gameMapImage(cv.cvtColor(self.__thresheldImage(), cv.COLOR_BGR2GRAY), self.__thresheldImage.ratio())
         image = gameMapImage(cv.GaussianBlur(image(), (5, 5), 0), image.ratio())
         cnts = cv.findContours(image(), cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
         cnts = imutils.grab_contours(cnts)
@@ -49,7 +62,7 @@ class userMapImage:
                 cX = int((M["m10"] / M["m00"]))
                 cY = int((M["m01"] / M["m00"]))
                 # draw the contour and center of the shape on the image
-                #cv.drawContours(image(), [c], -1, (0, 255, 0), 2)
+                # cv.drawContours(image(), [c], -1, (0, 255, 0), 2)
                 minshape = cv.minEnclosingCircle(c)
                 circles.append(minshape)
         # Filtered the circles
@@ -58,14 +71,13 @@ class userMapImage:
         returnPoints = []
         for circle in toDraw:
             # draw the circle on the image
-            cv.circle(image(), (int(circle[0][0]), int(circle[0][1])), int(circle[1]), (255, 255, 255), 2)
+            # cv.circle(self.__targetImage(), (int(circle[0][0]), int(circle[0][1])), int(circle[1]), (255, 255, 255), 2)
             # Remove the radius value, we don't need it after filtering
             returnPoints.append((int(circle[0][0]), int(circle[0][1])))
         i = 0
         for i in range(len(returnPoints)):
             # Scale the points to the size of the map
             returnPoints[i] = (int(returnPoints[i][0]*(4096/800)), int(returnPoints[i][1]*(4096/800)))
-        self.__targets = returnPoints
         return returnPoints
 
     def __filterCirlces(self, circles: list[tuple[tuple[int, int], int]]) -> list[tuple[tuple[int, int], int]]:
@@ -92,11 +104,40 @@ class userMapImage:
             toDraw = self.__remove(toDraw, circle)
         return toDraw
 
+    def __makeThresholdImage(self) -> np.ndarray:
+        # convert to hsv
+        hsv = cv.cvtColor(self.__croppedImage(), cv.COLOR_BGR2HSV)
+
+        # define range of red color in hsv
+        # some of the colors wrap around the hue value, so we have to define two ranges
+        lower_red = np.array([0, 100, 100])
+        upper_red = np.array([10, 255, 255])
+        lower_red2 = np.array([160, 100, 100])
+        upper_red2 = np.array([179, 255, 255])
+
+        # threshold the hsv image to get only red colors
+        mask = cv.inRange(hsv, lower_red, upper_red)
+
+        mask2 = cv.inRange(hsv, lower_red2, upper_red2)
+
+        # bitwise and mask and original image
+        res = cv.bitwise_and(self.__croppedImage(), self.__croppedImage(), mask=mask)
+
+        res2 = cv.bitwise_and(self.__croppedImage(), self.__croppedImage(), mask=mask2)
+
+        res = cv.bitwise_or(res, res2)
+        # erode to remove noise
+        res = cv.erode(res, None, iterations=1)
+        # dilate to fill in gaps
+        res = cv.dilate(res, None, iterations=1)
+
+        return res
+
     def __remove(self, the_list: list, val) -> list:
         return [value for value in the_list if value != val]
 
     def __detectAspectRatio(self) -> str:
-        height, width, channels = self.__image.shape()
+        height, width, channels = self.__imageOriginalImage.shape()
         if height * 4 == width * 3:
             return "4:3"
         if height * 16 == width * 10:
@@ -107,7 +148,7 @@ class userMapImage:
 
     def __cropImage(self, image: np.ndarray, cropSize: tuple[tuple[int, int], tuple[int, int], tuple[int, int], tuple[int, int]]) -> np.ndarray:
         topLeft, topRight, bottomLeft, bottomRight = cropSize
-        croppedImage = image[topLeft[1]:bottomLeft[1], topLeft[0]:topRight[0]]
+        croppedImage = image[topLeft[1]: bottomLeft[1], topLeft[0]: topRight[0]]
         return croppedImage
 
     def __returnCropSize(self, imageShape: tuple[int, int, int], ratio: str) -> tuple[tuple[int, int], tuple[int, int], tuple[int, int], tuple[int, int]]:

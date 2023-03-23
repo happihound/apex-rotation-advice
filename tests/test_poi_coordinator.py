@@ -68,12 +68,3 @@ def test_getPoiList():
     poiList = myCoordinator.getPoiList()
     assert isinstance(
         poiList[0], poi_node), "The first element of the list of points of interest is not a poi_node object"
-
-
-if __name__ == "__main__":
-    import sys
-    sys.path.append(path.join(path.dirname(__file__), '..'))
-
-    test_makeCoordinator()
-    test_loadMap_WE()
-    test_getPoiList()

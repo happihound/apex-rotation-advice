@@ -175,4 +175,7 @@ class userMapImage:
         image = cv.resize(image, (800, 800), interpolation=cv.INTER_AREA)
         return image
 
+    def __call__(self) -> gameMapImage:
+        return self.__imageOriginalImage
+
 # Path: gameMapImage.py

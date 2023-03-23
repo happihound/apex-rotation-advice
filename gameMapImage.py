@@ -30,5 +30,4 @@ class gameMapImage:
 
     def __call__(self, *args, **kwargs) -> np.ndarray:
         return self.__image
-
 # Path: prepareMap.py

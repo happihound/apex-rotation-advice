@@ -37,7 +37,9 @@ def main():
 
     plt.scatter(x, y, s=radius, color='green')
     # Show the image
-    plt.imshow(cv.imread("game_map/default/mapWE.png", cv.IMREAD_GRAYSCALE), cmap='gray')
+    WEmap = cv.imread("game_map/default/mapWE.png", cv.IMREAD_GRAYSCALE)
+    WEmap = cv.cvtColor(WEmap, cv.COLOR_BGR2RGB)
+    plt.imshow(WEmap)
 
     # This will draw the lines between all the associations on the map
     # for value in range(len(assocationLinesX)):
@@ -59,9 +61,9 @@ def showCurrentPoiAssociations(event):
         yClick = int(event.ydata)
 
         # Clear the plot and draw the map and the POIs again
-        plt.cla()
+        plt.clf()
         plt.scatter(x, y, s=radius, color='green')
-        plt.imshow(cv.imread("game_map/default/mapWE.png", cv.IMREAD_GRAYSCALE), cmap='gray')
+        #plt.imshow(cv.imread("game_map/default/mapWE.png", cv.IMREAD_GRAYSCALE), cmap='gray')
         plt.pause(0.001)
         plt.show()
 

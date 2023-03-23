@@ -16,7 +16,7 @@ def main():
     start = myCoordinator.getPoi(poiID=1)
     end = myCoordinator.getPoi(poiID=74)
     start2 = myCoordinator.getPoi(poiID=74)
-    end2 = myCoordinator.getPoi(poiID=39)
+    end2 = myCoordinator.getPoi(poiID=14)
     usermap = cv.imread("tests/test_images/16by10/test_image4_16by10.png", cv.IMREAD_UNCHANGED)
     userMapImage = mapImage.userMapImage(usermap, "16:10")
     avoidCoords = userMapImage.getTargets()

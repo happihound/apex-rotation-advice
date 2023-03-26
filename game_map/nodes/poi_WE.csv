@@ -81,7 +81,7 @@ poiID, poiName, x, y, radius, isChoke
 80,North Frag West - Epi Choke,2341,1350,-1,True
 81,East Frag East,2917,1592,75,False
 82,East Frag South - Geyser Choke, 2929, 2343, -1, True 
-83, South Frag West,2509,2100,80,False
+83,South Frag West,2509,2100,80,False
 ASSOCIATION
 1,5,6,7 
 2,7,3,8,12 

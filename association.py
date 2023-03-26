@@ -1,125 +1,132 @@
 import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt
-from userMapImage import userMapImage
-from gameMapImage import gameMapImage
-import imutils
-import csv
 from poi_coordinator import coordinator
-x = []
-y = []
-radius = []
-currentPoiList = []
-myCoordinator = coordinator()
 
 
-def main():
-    # load the map
-    myCoordinator.loadMap("WE")
-    # create the lists to store the x and y coordinates of the points of interest
-    assocationLinesX = []
-    assocationLinesY = []
-    # load the image from game_map/default/mapWE.png and display in the graph
-    for poi in myCoordinator.getPoiList():
-        print(poi.getName())
-        xcoord, ycoord = poi.getCoords()
-        x.append(xcoord)
-        y.append(ycoord)
-        if poi.getChoke() == True:
-            radius.append(9*4)
-        else:
-            radius.append(poi.getRadius())
-        if poi.getAssociations() != []:
-            for association in poi.getAssociations():
-                assocationLinesX.append([xcoord, association.getCoords()[0]])
-                assocationLinesY.append([ycoord, association.getCoords()[1]])
-                print("\t", association.getName())
+class association:
+    __slots__ = ['__currentPoiList', '__coordinator', "__mapName", "__mapImage", "__validMaps"]
 
-    plt.scatter(x, y, s=radius, color='green')
-    # Show the image
-    WEmap = cv.imread("game_map/default/mapWE.png", cv.IMREAD_GRAYSCALE)
-    WEmap = cv.cvtColor(WEmap, cv.COLOR_BGR2RGB)
-    plt.imshow(WEmap)
+    def __init__(self, mode, validMaps, mapName):
+        self.__validMaps = validMaps
+        if mode == None or mode == "":
+            raise Exception("Please enter a mode. Valid modes are 'all', 'view', and 'create'")
+        if mode != "all" and mode != "view" and mode != "create" and mode != 1 and mode != 2 and mode != 3:
+            raise Exception("Invalid mode. Please enter 'all', 'view', or 'create', not " + mode)
+        self.__mapName = mapName
+        self.__coordinator = coordinator(self.__validMaps)
+        self.__coordinator.loadMap(self.__mapName)
+        self.__currentPoiList = []
+        self.__plotAllPois()
+        # load the image from game_map/default/mapWE.png and display in the graph along with the POIs
+        # to show the current associations of a poi
+        # Convert the mode to an integer
+        if mode == "all":
+            mode = 1
+        if mode == "view":
+            mode = 2
+        if mode == "create":
+            mode = 3
+        # if mode is 1 or "all", then show the map and the associations
+        if mode == 1:
+            self.__plotAllAssociations()
+        # if mode is 2 or "view", then show the map and allow the user to view individual associations
+        if mode == 2:
+            cid = plt.gcf().canvas.mpl_connect('button_press_event', self.__showCurrentPoiAssociations)
+        # if mode is 3 or "create", then show the map and allow the user to create associations
+        if mode == 3:
+            cid = plt.gcf().canvas.mpl_connect('button_press_event', self.__createAssociation)
+        plt.show()
+        plt.pause(0.001)
 
-    # This will draw the lines between all the associations on the map
-    # for value in range(len(assocationLinesX)):
-    #   plt.plot(assocationLinesX[value], assocationLinesY[value], color='red', linewidth=0.2)
-
-    # to show the current associations of a poi
-    cid = plt.gcf().canvas.mpl_connect('button_press_event', showCurrentPoiAssociations)
-
-    # to create new association
-    #cid = plt.gcf().canvas.mpl_connect('button_press_event', createAssociation)
-    plt.show()
-    plt.pause(0.001)
-
-
-def showCurrentPoiAssociations(event):
-    try:
-        # Retrieve the x and y coordinates of the click
-        xClick = int(event.xdata)
-        yClick = int(event.ydata)
-
-        # Clear the plot and draw the map and the POIs again
+    def __plotAllPois(self):
+        # Show the image
+        self.__loadGameMap()
         plt.clf()
-        plt.scatter(x, y, s=radius, color='green')
-        #plt.imshow(cv.imread("game_map/default/mapWE.png", cv.IMREAD_GRAYSCALE), cmap='gray')
+        plt.imshow(self.__mapImage)
+        # Plot all the POIs
+        for poi in self.__coordinator.getPoiList():
+            plt.scatter(poi.getX(), poi.getY(), s=poi.getRadius(), color='green')
+        plt.gcf().canvas.draw()
+
+    def __plotAllAssociations(self):
+        # Show the image
+        self.__plotAllPois()
+        plt.imshow(self.__mapImage, cmap='gray')
+        # Plot all the POIs
+        for poi in self.__coordinator.getPoiList():
+            # Plot the POI
+            plt.scatter(poi.getX(), poi.getY(), s=poi.getRadius(), color='green')
+            # Plot the POI's associations
+            for association in poi.getAssociations():
+                plt.plot((poi.getX(), association.getX()), (poi.getY(), association.getY()), color='red',
+                         linewidth=0.3)
         plt.pause(0.001)
         plt.show()
 
-        # Check if the click is inside a POI
-        for i in range(len(x)):
-            if xClick > x[i] - radius[i] and xClick < x[i] + radius[i] and yClick > y[i] - radius[i] and yClick < y[i] + radius[i]:
-                # Retrieve the POI object
-                primaryNode = myCoordinator.getPoi(poiID=i+1)
+    def __loadGameMap(self):
+        if self.__mapName not in self.__validMaps:
+            raise Exception("Invalid map name given, " + self.__mapName + " please enter a valid map name.")
+        if self.__mapName == "WE":
+            tempMap = cv.imread("game_map/default/mapWE.png", cv.IMREAD_UNCHANGED)
+            self.__mapImage = cv.cvtColor(tempMap, cv.COLOR_BGR2RGB)
 
-                # Retrieve the list of associated POIs
-                associatedPois = primaryNode.getAssociations()
+    def __showCurrentPoiAssociations(self, event):
+        try:
+            # Retrieve the x and y coordinates of the click
+            xClick = int(event.xdata)
+            yClick = int(event.ydata)
 
-                # Draw the associations
-                for poi in associatedPois:
-                    plt.plot((primaryNode.getX(), poi.getX()),
-                             (primaryNode.getY(), poi.getY()), color='red', linewidth=0.3)
-        plt.pause(0.001)
-        plt.show()
-    except Exception as e:
-        print(e)
+            # Clear the plot and draw the map and the POIs again
+            plt.clf()
+            self.__plotAllPois()
 
+            # Find the poi closest to the click
+            primaryNode = self.__coordinator.findPoiFromLocation(xClick, yClick)
 
-def createAssociation(event):
-    try:
-        # get the x and y coordinates of the click
-        xClick = event.xdata
-        yClick = event.ydata
-        # determine if it was a left or right click
-        clickType = event.button
-        if clickType == 1:
-            # iterate through all the poi's
-            for i in range(len(x)):
-                # determine if the click was within the radius of the poi
-                if xClick > x[i] - radius[i] and xClick < x[i] + radius[i] and yClick > y[i] - radius[i] and yClick < y[i] + radius[i]:
-                    print(i+1, end=",", flush=True)
-                    currentPoiList.append(int(i+1))
-                    break
-        if clickType == 3:
-            print("", flush=True)
-            # iterate through the poi's in the array
-            for enum, value in enumerate(currentPoiList):
-                # get the x and y coordinates of the poi
-                xcoord, ycoord = myCoordinator.getPoi(poiID=value).getCoords()
-                # get the x and y coordinates of the first poi in the array
-                xlocal, ylocal = myCoordinator.getPoi(poiID=currentPoiList[0]).getCoords()
-                # plot a line between the two poi's
-                plt.plot((xcoord, xlocal), (ycoord, ylocal), color='blue')
-                # print the name of the poi, which can be copied and pasted into the csv file
-                print(myCoordinator.getPoi(poiID=value).getName(), end=", ")
+            # Retrieve the list of associated POIs
+            associatedPois = primaryNode.getAssociations()
+
+            # Draw the associations
+            for poi in associatedPois:
+                plt.plot((primaryNode.getX(), poi.getX()),
+                         (primaryNode.getY(), poi.getY()), color='red', linewidth=0.3)
             plt.pause(0.001)
-            plt.show()
-            currentPoiList.clear()
-            print("", flush=True)
-    except Exception as e:
-        print(e)
+            plt.gcf.canvas.draw()
+        except Exception as e:
+            pass
 
+    def __createAssociation(self, event):
+        try:
+            # get the x and y coordinates of the click
+            xClick = int(event.xdata)
+            yClick = int(event.ydata)
+            # determine if it was a left or right click
+            clickType = event.button
+            if clickType == 1:
+                # find the poi closest to the click
+                xClick = int(event.xdata)
+                yClick = int(event.ydata)
+                if len(self.__currentPoiList) == 0:
+                    nearestPoi = self.__coordinator.findPoiFromLocation(xClick, yClick)
+                    self.__currentPoiList.append(nearestPoi)
+                else:
+                    # Find the poi closest to the click
+                    nearestPoi = self.__coordinator.findPoiFromLocation(xClick, yClick)
+                if nearestPoi not in self.__currentPoiList and nearestPoi.getID() not in self.__currentPoiList[0].getAssociationIDs():
+                    print(nearestPoi.getID(), end=",", flush=True)
+                # add the poi to the array
+                self.__currentPoiList.append(nearestPoi)
+                xcoord, ycoord = nearestPoi.getCoords()
+                xlocal, ylocal = self.__currentPoiList[0].getCoords()
+                plt.scatter(xlocal, ylocal, s=self.__currentPoiList[0].getRadius(), color='red')
+                plt.plot((xcoord, xlocal), (ycoord, ylocal), color='blue')
+                # print the poi's id, which can be copied and pasted into the csv file
+                plt.pause(0.001)
+            if clickType == 3:
+                self.__plotAllPois()
+                print("", flush=True)
+                self.__currentPoiList = []
 
-if __name__ == "__main__":
-    main()
+        except Exception as e:
+            print(e)

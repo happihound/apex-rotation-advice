@@ -23,11 +23,14 @@ class gameMapImage:
         return self.__image
 
     def copy(self) -> "gameMapImage":
-        return gameMapImage(self.__image, self.__ratio)
+        returnImage = np.copy(self.__image)
+        return gameMapImage(returnImage, self.__ratio)
 
     def shape(self) -> tuple:
         return self.__image.shape
 
     def __call__(self, *args, **kwargs) -> np.ndarray:
         return self.__image
-# Path: prepareMap.py
+
+    def __eq___(self, other: "gameMapImage") -> bool:
+        return self.__image is other.image() and self.__ratio == other.ratio()

@@ -9,6 +9,8 @@ class poi:
         self.__radius = radius
         self.__neighbors = []
         self.__isChoke = isChoke
+        if self.__isChoke:
+            self.__radius = 36
         self.__avoid = False
 
     def addAssociation(self, neighbor: 'poi') -> None:
@@ -31,6 +33,12 @@ class poi:
         for neighbor in self.__neighbors:
             names.append(neighbor.getName())
         return names
+
+    def getAssociationIDs(self) -> list:
+        ids = []
+        for neighbor in self.__neighbors:
+            ids.append(neighbor.getID())
+        return ids
 
     def getID(self) -> int:
         return self.__poiID

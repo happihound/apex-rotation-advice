@@ -1,6 +1,6 @@
 # apex-rotation-advice
 
-A short description of what your project does and what problem it solves.
+A python program to compute the safest path between two locations in apex legends
 
 ## Table of Contents
 
@@ -73,7 +73,6 @@ If no ratio is given, the program will attempt to find the ratio, this is not al
 
 ## Examples:
 
-Provide some examples of how your project can be used. Include code snippets, screenshots, or even GIFs to illustrate the functionality.
 ### Example 1:
 Viewing all association data for World's Edge:
 ```bash

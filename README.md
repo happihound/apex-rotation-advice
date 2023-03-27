@@ -64,7 +64,7 @@ In order to to use the utility, you must first scan a beacon in game.
 4. If you are using the safe path viewer, you should also provide the ratio argument.
    
 
-The program will then attempt to find the location of all enemies, and the safest path between two poi's while avoiding all enemies.
+The program will then attempt to find the location of all enemies, and the safest path between all selected poi's while avoiding all enemies.
 
 Note:
 The ratio argument is the ratio of the screenshot placed in the inputScan folder. 

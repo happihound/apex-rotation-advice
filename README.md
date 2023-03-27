@@ -57,9 +57,20 @@ To start the safe path viewer utility:
 ```bash
     main.py findSafePath -mapName= -ratio= 
 ```
-The ratio argument is the ratio of the screenshot placed in the inputScanner folder. 
+In order to to use the utility, you must first scan a beacon in game.
+1. While the map still shows all the location of all enemies, take a screenshot
+2. Place the screenshot in the inputScan folder.
+3. Run the program with the mapName argument set to the name of the map you are playing on.
+4. If you are using the safe path viewer, you should also provide the ratio argument.
+   
 
-If not ratio is given, the program will attempt to find the ratio, this is not always accurate, so it is recommended to provide the ratio.
+The program will then attempt to find the location of all enemies, and the safest path between two poi's while avoiding all enemies.
+
+Note:
+The ratio argument is the ratio of the screenshot placed in the inputScan folder. 
+
+If no ratio is given, the program will attempt to find the ratio, this is not always accurate, so it is recommended to provide the ratio.
+
 ## Examples:
 
 Provide some examples of how your project can be used. Include code snippets, screenshots, or even GIFs to illustrate the functionality.

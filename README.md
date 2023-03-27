@@ -82,9 +82,14 @@ Viewing all association data for World's Edge:
 
 
 ### Example 2:
-Finding a safe path between two poi's on worlds edge from a 16:9 aspect ratio screenshot:
+
+
+Example input screenshot
+![input_screenshot](githubImages/input_screenshot.png)
+
+Finding a safe path between two poi's on worlds edge from the 16:10 aspect ratio screenshot:
 ```bash
-    python main.py findSafePath -mapName=WE -ratio=16:9
+    python main.py findSafePath -mapName=WE -ratio=16:10
 ```
 Running the above command will open this window in which you can select the poi's you want to find a safe path between. 
 
@@ -109,7 +114,7 @@ Example result of the safe path between the two poi's
 
 If you'd like to run the tests, you can do so by running the following command:
 ```bash
-    python runTests.py
+    python run_tests.py
 ```
 
 ## Built With

@@ -1,6 +1,0 @@
-Convert the image to convert to 1:1 aspect ratio and then to 800x800 pixels - Done
-Take the input image and do threshholding on it to highlight enemy markers- Done
-If the markers are close enough, group them together and find the center of the group - Done
-Draw a minimum convex hull around the center of the group, 1.5x the distance between the furthest markers - Done
-Find the ring, and designate it as the desination point - Scrapped 
-Use the image of the base map to plot a path between the hulls and the unplayable area, to the last ring pull - Altered

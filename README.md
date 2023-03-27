@@ -129,6 +129,10 @@ If you'd like to run the tests, you can do so by running the following command:
     6. Create a node based graph of the map - Done
     7. Plot safest path between two points - Done
     8. Publish the project to github - Done
+    9. Add more maps - To be done
+    10. Add the ability to predict ring movement - To be done
+
+    Have an idea? Feel free to open an issue or pull request and I'll look into it!
 
 ## License
 

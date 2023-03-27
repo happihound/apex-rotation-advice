@@ -1,9 +1,5 @@
-cv2
-numpy
-matplotlib
-glob
-sys
-csv
-math
-imutils
-pytest
+imutils==0.5.4
+matplotlib==3.7.0
+numpy==1.24.1
+opencv_python==4.7.0.72
+pytest==7.2.2

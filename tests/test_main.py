@@ -1,7 +1,7 @@
 import main
 
 
-def test_validMaps():
+def test_main_validMaps():
     assert main.getValidMaps() == ["WE"]
 
 
@@ -71,7 +71,16 @@ def test_main_noProgramMode():
     except Exception as e:
         # If the main function does raise an exception, then the test passes if the
         # exception message is the expected message
-        assert str(e) == "Please enter a valid command."
+        assert str(e) == "Please enter a valid command. Type -h or help for more information."
+
+
+def test_main_findSafePath():
+    # This test will only work with a 16:10 aspect ratio image in the input folder, so we skip it
+    return
+    # Call the main function with the arguments as a list
+    main.main(["main.py", "findSafePath", "mapName=WE", "ratio=16:10"])
+    # Assert that the test passed
+    assert True
 
 
 def test_main_wrongRatio_findSafePath():

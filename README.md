@@ -9,7 +9,9 @@ A short description of what your project does and what problem it solves.
   - [Getting Started](#getting-started)
     - [Installation](#installation)
   - [Usage](#usage)
-    - [Examples](#examples)
+  - [Examples:](#examples)
+    - [Example 1:](#example-1)
+    - [Example 2:](#example-2)
   - [Running the Tests](#running-the-tests)
   - [Built With](#built-with)
   - [Roadmap](#roadmap)
@@ -58,18 +60,40 @@ To start the safe path viewer utility:
 The ratio argument is the ratio of the screenshot placed in the inputScanner folder. 
 
 If not ratio is given, the program will attempt to find the ratio, this is not always accurate, so it is recommended to provide the ratio.
-### Examples
+## Examples:
 
 Provide some examples of how your project can be used. Include code snippets, screenshots, or even GIFs to illustrate the functionality.
-
+### Example 1:
 Viewing all association data for World's Edge:
 ```bash
     python main.py association -mapName=WE -mode=all
 ```
+![view_all_association_data](githubImages/view_all.png)
+
+
+### Example 2:
 Finding a safe path between two poi's on worlds edge from a 16:9 aspect ratio screenshot:
 ```bash
     python main.py findSafePath -mapName=WE -ratio=16:9
 ```
+Running the above command will open this window in which you can select the poi's you want to find a safe path between. 
+
+
+![pick_poi_to_visit](githubImages/pick_poi_to_visit.png)
+
+The number of pois you can select is not limited, and they will be connected in the order you select them
+
+
+![skyhook_and_lava_selected](githubImages/skyhook_lava_selected.png)
+
+Example of Lava and Skyhook selected:
+
+
+![safe_path_found](githubImages/safe_path.png)
+
+
+Example result of the safe path between the two poi's
+
 
 ## Running the Tests
 
@@ -80,9 +104,9 @@ If you'd like to run the tests, you can do so by running the following command:
 
 ## Built With
 
-* [Opencv](https://opencv.org/) - The primary framework or library used
-* [Numpy](https://numpy.org/) - The secondary framework or library used
-* [matplotlib](https://matplotlib.org/) - The tertiary framework or library used
+* [Opencv](https://opencv.org/)
+* [Numpy](https://numpy.org/)
+* [matplotlib](https://matplotlib.org/)
 
 
 ## Roadmap

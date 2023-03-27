@@ -12,6 +12,7 @@ A short description of what your project does and what problem it solves.
     - [Examples](#examples)
   - [Running the Tests](#running-the-tests)
   - [Built With](#built-with)
+  - [Roadmap](#roadmap)
   - [License](#license)
   - [Acknowledgments](#acknowledgments)
 
@@ -83,6 +84,17 @@ If you'd like to run the tests, you can do so by running the following command:
 * [Numpy](https://numpy.org/) - The secondary framework or library used
 * [matplotlib](https://matplotlib.org/) - The tertiary framework or library used
 
+
+## Roadmap
+
+    1. Convert the image to convert to 1:1 aspect ratio and then to 800x800 pixels - Done
+    2. Take the input image and do threshholding on it to highlight enemy markers- Done
+    3. If the markers are close enough, group them together and find the center of the group - Done
+    4. Draw a minimum convex hull around the center of the group - Done
+    5. Find the center of the hull - Done
+    6. Create a node based graph of the map - Done
+    7. Plot safest path between two points - Done
+    8. Publish the project to github - Done
 
 ## License
 

@@ -114,7 +114,7 @@ class userMapImage:
         # define range of red color in hsv
         # some of the colors wrap around the hue value, so we have to define two ranges
         lower_red = np.array([0, 100, 100])
-        upper_red = np.array([10, 255, 255])
+        upper_red = np.array([5, 255, 255])
         lower_red2 = np.array([160, 100, 100])
         upper_red2 = np.array([179, 255, 255])
 

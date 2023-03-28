@@ -62,6 +62,7 @@ def main(args):
         if "mapname=" in arg:
             # if it does, set the selected map to the argument
             selectedMap = arg[8:]
+            selectedMap.strip("=")
             # uppercase the selected map
             selectedMap = selectedMap.upper()
             # check if the selected map is in the list of valid maps

@@ -61,8 +61,7 @@ def main(args):
         # check if the argument contains mapname
         if "mapname=" in arg:
             # if it does, set the selected map to the argument
-            selectedMap = arg[8:]
-            selectedMap.strip("=")
+            selectedMap = arg.split("=")[1]
             # uppercase the selected map
             selectedMap = selectedMap.upper()
             # check if the selected map is in the list of valid maps
@@ -72,11 +71,11 @@ def main(args):
         # check if the argument contains ratio
         if "ratio=" in arg:
             # if it does, set the ratio to the argument
-            ratio = arg[6:]
+            ratio = arg.split("=")[1]
         # check if the argument contains mode
         if "mode=" in arg:
             # if it does, set the association mode to the argument
-            associationMode = arg[5:]
+            associationMode = arg.split("=")[1]
     # check if the program mode is not none
     assert programMode != None, "Please enter a valid command."
     # check if the valid map is false

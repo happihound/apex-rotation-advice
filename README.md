@@ -1,5 +1,7 @@
 # apex-rotation-advice
 
+[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fhappihound%2Fapex-rotation-advice&count_bg=%23CFCFCF&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
+
 A python program to compute the safest path between two locations in apex legends
 
 ## Table of Contents

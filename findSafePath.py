@@ -1,6 +1,7 @@
 import glob
 import cv2 as cv
 import matplotlib.pyplot as plt
+import numpy as np
 import userMapImage as mapImage
 from poi_coordinator import coordinator
 
@@ -19,7 +20,7 @@ class findSafePath:
             self.__userMapImage = mapImage.userMapImage(self.__loadUserMap())
         self.run()
 
-    def __loadUserMap(self):
+    def __loadUserMap(self) -> np.ndarray:
         # grab the image file in the inputScan folder regardless of name
         path = "inputScan/*.png"
         files = glob.glob(path)
@@ -31,7 +32,7 @@ class findSafePath:
             usermap = cv.imread(files[0], cv.IMREAD_UNCHANGED)
         return usermap
 
-    def __loadGameMap(self):
+    def __loadGameMap(self) -> None:
         # grab the image file in the inputScan folder
         if self.__mapName not in self.__validMaps:
             raise Exception("Invalid map name given, " + self.__mapName + " please enter a valid map name.")
@@ -41,7 +42,7 @@ class findSafePath:
         else:
             raise Exception("Invalid map name given, "+self.__mapName+" please enter a valid map name.")
 
-    def run(self):
+    def run(self) -> None:
         self.__coordinator = coordinator(self.__validMaps)
         self.__coordinator.loadMap(self.__mapName)
         totalDistance = 0
@@ -80,7 +81,7 @@ class findSafePath:
         plt.show()
         plt.pause(0.001)
 
-    def plotAllPois(self):
+    def plotAllPois(self) -> None:
         # Show the image
         self.__loadGameMap()
         plt.imshow(self.__mapImage)
@@ -101,7 +102,7 @@ class findSafePath:
         plt.close()
         return self.__currentPoiList
 
-    def __selectTwoPois(self, event):
+    def __selectTwoPois(self, event) -> None:
         try:
             # Retrieve the x and y coordinates of the click
             xClick = int(event.xdata)

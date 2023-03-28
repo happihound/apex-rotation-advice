@@ -38,7 +38,7 @@ class association:
         plt.show()
         plt.pause(0.001)
 
-    def __plotAllPois(self):
+    def __plotAllPois(self) -> None:
         # Show the image
         self.__loadGameMap()
         plt.clf()
@@ -48,7 +48,7 @@ class association:
             plt.scatter(poi.getX(), poi.getY(), s=poi.getRadius(), color='green')
         plt.gcf().canvas.draw()
 
-    def __plotAllAssociations(self):
+    def __plotAllAssociations(self) -> None:
         # Show the image
         self.__plotAllPois()
         plt.imshow(self.__mapImage, cmap='gray')
@@ -63,14 +63,14 @@ class association:
         plt.pause(0.001)
         plt.show()
 
-    def __loadGameMap(self):
+    def __loadGameMap(self) -> None:
         if self.__mapName not in self.__validMaps:
             raise Exception("Invalid map name given, " + self.__mapName + " please enter a valid map name.")
         if self.__mapName == "WE":
             tempMap = cv.imread("game_map/default/mapWE.png", cv.IMREAD_UNCHANGED)
             self.__mapImage = cv.cvtColor(tempMap, cv.COLOR_BGR2RGB)
 
-    def __showCurrentPoiAssociations(self, event):
+    def __showCurrentPoiAssociations(self, event) -> None:
         try:
             # Retrieve the x and y coordinates of the click
             xClick = int(event.xdata)
@@ -95,7 +95,7 @@ class association:
         except Exception as e:
             pass
 
-    def __createAssociation(self, event):
+    def __createAssociation(self, event) -> None:
         try:
             # get the x and y coordinates of the click
             xClick = int(event.xdata)

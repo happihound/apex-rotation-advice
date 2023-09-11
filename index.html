@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>apex-rotation-advice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1, h2, h3 {
+            color: #333;
+        }
+
+        a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        code {
+            background-color: #f2f2f2;
+            padding: 5px;
+            border-radius: 3px;
+            display: block;
+            margin: 10px 0;
+        }
+
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>apex-rotation-advice</h1>
+
+<a href="https://hits.seeyoufarm.com">
+    <img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fhappihound%2Fapex-rotation-advice&count_bg=%23CFCFCF&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false" alt="hits">
+</a>
+
+<p>A python program to compute the safest path between two locations in apex legends. It uses a custom variant of graph path finding that focuses on speed of computing the path, and actual distance from start to finish instead of node count.</p>
+
+<h2>Table of Contents</h2>
+<ul>
+    <li><a href="#getting-started">Getting Started</a>
+        <ul>
+            <li><a href="#installation">Installation</a></li>
+        </ul>
+    </li>
+    <li><a href="#usage">Usage</a></li>
+    <li><a href="#examples">Examples</a>
+        <ul>
+            <li><a href="#example-1">Example 1</a></li>
+            <li><a href="#example-2">Example 2</a></li>
+        </ul>
+    </li>
+    <li><a href="#running-the-tests">Running the Tests</a></li>
+    <li><a href="#built-with">Built With</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#acknowledgments">Acknowledgments</a></li>
+</ul>
+
+<h2 id="getting-started">Getting Started</h2>
+<p>These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.</p>
+
+<h3 id="installation">Installation</h3>
+<ol>
+    <li>Clone the repo
+        <code>git clone https://github.com/happihound/apex-rotation-advice.git</code>
+    </li>
+    <li>Navigate to the project directory
+        <code>cd apex-rotation-advice</code>
+    </li>
+    <li>Install dependencies
+        <code>pip install -r requirements.txt</code>
+    </li>
+    <li>Run the project
+        <code>python main.py</code>
+    </li>
+</ol>
+
+<h2 id="usage">Usage</h2>
+<p>This utility accepts the following command line arguments:</p>
+<p>To see all valid command line arguments:</p>
+<code>main.py -h</code>
+<p>To start the association viewer utility:</p>
+<code>main.py association -mapName= -mode=</code>
+<p>To start the safe path viewer utility:</p>
+<code>main.py findSafePath -mapName= -ratio=</code>
+<p>In order to use the utility, follow these steps:</p>
+<ol>
+    <li>While the map still shows the location of all enemies, take a screenshot.</li>
+    <li>Place the screenshot in the inputScan folder.</li>
+    <li>Run the program with the mapName argument set to the name of the map you are playing on.</li>
+    <li>If using the safe path viewer, also provide the ratio argument.</li>
+</ol>
+<p>Note: The ratio argument refers to the ratio of the screenshot placed in the inputScan folder. If no ratio is provided, the program will attempt to find it, but it's not always accurate, so it's recommended to provide the ratio.</p>
+
+<h2 id="examples">Examples</h2>
+<h3 id="example-1">Example 1</h3>
+<p>Viewing all association data for World's Edge:</p>
+<code>python main.py association -mapName=WE -mode=all</code>
+<img src="githubImages/view_all.png" alt="View All Association Data">
+
+<h3 id="example-2">Example 2</h3>
+<p>Example input screenshot:</p>
+<img src="githubImages/input_screenshot.png" alt="Input Screenshot">
+<p>Finding a safe path between two poi's on worlds edge from the 16:10 aspect ratio screenshot:</p>
+<code>python main.py findSafePath -mapName=WE -ratio=16:10</code>
+<p>Running the above command will open this window where you can select the poi's:</p>
+<img src="githubImages/pick_poi_to_visit.png" alt="Pick POI to Visit">
+<p>Example of Lava and Skyhook selected:</p>
+<img src="githubImages/skyhook_lava_selected.png" alt="Skyhook and Lava Selected">
+<p>Result of the safe path:</p>
+<img src="githubImages/safe_path.png" alt="Safe Path Found">
+
+<h2 id="running-the-tests">Running the Tests</h2>
+<p>To run the tests, execute:</p>
+<code>python run_tests.py</code>
+
+<h2 id="built-with">Built With</h2>
+<ul>
+    <li><a href="https://opencv.org/">Opencv</a></li>
+    <li><a href="https://numpy.org/">Numpy</a></li>
+    <li><a href="https://matplotlib.org/">matplotlib</a></li>
+</ul>
+
+<h2 id="roadmap">Roadmap</h2>
+<ol>
+    <li>Convert the image to 1:1 aspect ratio and then to 800x800 pixels - Done</li>
+    <!--... and so on for each item on the roadmap -->
+    <li>Add the ability to predict ring movement - To be done</li>
+</ol>
+<p>Have an idea? Feel free to open an issue or pull request and I'll look into it!</p>
+
+<h2 id="license">License</h2>
+<p>This project is not to be used for commercial purposes or any other purpose other than personal use. Credit must be given to the original author if used in any other project. It may not be used in any project that is not open source.</p>
+
+<h2 id="acknowledgments">Acknowledgments</h2>
+<ul>
+    <li>Thanks to wattson_x for assisting with labeling the map, making this project possible.</li>
+    <li>Thanks to the Apex Legends community for the data.</li>
+    <li>Thanks to KeanuJ for the inspiration.</li>
+</ul>
+
+</body>
+</html>
+
